@@ -1,9 +1,8 @@
 """Created on 11-Feb-18.
-Author: Spencer
+Author: Spencer Tollefson
 Description: cronometerNewDay.py - Copy my Cronometer chart from the previous
              and reset most of the inputs to 0.
 """
-
 
 import time
 start = time.time()
@@ -52,8 +51,8 @@ try:
     Username = browser.find_element_by_name('username')
     Password = browser.find_element_by_name('password')
     element = wait.until(EC.visibility_of_element_located((By.NAME, 'username')))
-    Username.send_keys('EMAIL ADDRESS GOES HERE')
-    Password.send_keys('PASSWORD GOES HERE')
+    Username.send_keys('INPUT_USERNAME_HERE')
+    Password.send_keys('INPUT_PW_HERE')
     Password.send_keys(Keys.ENTER)
 
     # TODO Sometimes an upgrade thing pops up. If it does, Exit out of it then continue. simply need an if clause like below:
@@ -64,12 +63,18 @@ try:
     # nextday()
 
     # Copy Yesterday's Diary to Today.
-    browser.find_element_by_xpath('//*[@id="cronometerApp"]/div/div[1]/div/'
-                                  'table/tbody/tr/td[2]/div/div[1]/'
-                                  'button[5]').click() # Open settings button.
+    logging.debug('made it before click the box')
+    xpathforsettings = '//*[@id="cronometerApp"]/div/div[1]/div/table/tbody/tr/td[2]/div/div[1]/button[5]'
+    element = wait.until(
+        EC.visibility_of_element_located((By.XPATH, xpathforsettings)))
+    browser.find_element_by_xpath(xpathforsettings).click() # Open settings button.
+    logging.debug('clicked the box')
+    # browser.find_element_by_class_name('GL-TVABCFNB brighten br-unhover').click()  # Open settings button.
     myxpath2 = '/html/body/div[3]/div/table/tbody/tr[3]/td/div'
+    logging.debug('about to wait for EC visibility of xpath')
     element = wait.until(EC.visibility_of_element_located((By.XPATH, myxpath2)))
     browser.find_element_by_xpath(myxpath2).click() # Wait then click Copy Prev Day
+    logging.debug('clicked the Copy Prev Day button')
 
     # Set values for all food to 0.
     try:
@@ -86,7 +91,7 @@ try:
             keyxpath = f'// *[ @ id = "cronometerApp"] / div / div[1] / div / table / tbody / tr / td[2] / div / div[2] / table / tbody / tr[{i}] / td[3] / div'
             logging.debug('Set key path')
 
-            element = wait.until(EC.visibility_of_element_located((By.XPATH, keyxpath)))
+            element = WebDriverWait(browser, 1).until(EC.visibility_of_element_located((By.XPATH, keyxpath))) # I changed wait out for WebDriverWait here
             logging.debug('Did element wait')
 
             serving = browser.find_element_by_xpath(keyxpath).click()
